@@ -12,7 +12,6 @@ app.use(express.json());
 /* var db = 'mongodb+srv://user:user@shoppinglist-3cfnv.mongodb.net/test?retryWrites=true&w=majority'; */
 var db = config.get('mongoURI');
 
-
 //Connect Mongodb
 /* mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true); */
