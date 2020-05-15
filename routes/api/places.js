@@ -17,5 +17,5 @@ router.delete('/place/:id', PlaceController.deletePlace);
 router.post('/upload-image/:id', md_upload, PlaceController.uploadImagePlace);
 router.get('/get-image/:image', PlaceController.getImagePlace);
 router.get('/search/:search', PlaceController.searchPlace);
-/* Esto es una prueba */
+
 module.exports = router;
