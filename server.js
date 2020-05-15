@@ -9,7 +9,6 @@ const app = express();
 app.use(express.json());
 
 //DB Config
-/* var db = 'mongodb://localhost:27017/LoginShopping'; */
 /* var db = 'mongodb+srv://user:user@shoppinglist-3cfnv.mongodb.net/test?retryWrites=true&w=majority'; */
 var db = config.get('mongoURI');
 
