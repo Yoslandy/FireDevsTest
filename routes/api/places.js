@@ -1,8 +1,7 @@
 'use strict'
-
 var express = require('express');
-var PlaceController = require('../../controllers/place');
 
+var PlaceController = require('../../controllers/place');
 var router = express.Router();
 
 var multipart = require('connect-multiparty');
