@@ -1,8 +1,7 @@
 'use strict'
-
 var express = require('express');
-var PlaceController = require('../../controllers/place');
 
+var PlaceController = require('../../controllers/place');
 var router = express.Router();
 
 var multipart = require('connect-multiparty');
@@ -18,5 +17,5 @@ router.delete('/place/:id', PlaceController.deletePlace);
 router.post('/upload-image/:id', md_upload, PlaceController.uploadImagePlace);
 router.get('/get-image/:image', PlaceController.getImagePlace);
 router.get('/search/:search', PlaceController.searchPlace);
-
+/* Esto es una prueba */
 module.exports = router;
