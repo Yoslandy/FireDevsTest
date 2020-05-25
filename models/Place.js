@@ -7,7 +7,7 @@ var PlaceSchema = Schema({
     name: String,
     city: String,
     image: String,
-    image_name: String,
+    image_name: [],
     packs: [{
         type: Schema.Types.ObjectId,
         ref: 'Pack'

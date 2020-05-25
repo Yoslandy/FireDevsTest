@@ -23,11 +23,11 @@ var controller = {
         }
         if (validate_name && validate_city) {
             //Si todo es verdadero...
-            var place = new Place(); //creo objeto a guardar
-            place.name = params.name; //Asignar valores
+            var place = new Place();                    //creo objeto a guardar
+            place.name = params.name;                   //Asignar valores
             place.city = params.city;
-            place.image = null;
-            place.image_name = null;
+            place.image = params.image;                 //direccion de la imagen en la nube en AWS Amazon S3
+            place.image_name = params.image_name;    //nombre original de la imagen
             place.save((err, placeStored) => {
                 //Guardar articulo
                 if (err || !placeStored) {
@@ -160,76 +160,11 @@ var controller = {
                 });
             }
             Pack.updateMany({}, { $pull: { places: placeId } }, { new: true }, () => {
-
             });
-            var path_file = './upload/places/' + placeDeleted.image;
-            fs.unlink(path_file, () => {
-                return res.status(200).send({
-                    status: 'success',
-                    place: placeDeleted
-                });
+            return res.status(200).send({
+                status: 'success',
+                place: placeDeleted
             });
-        });
-    },
-
-    uploadImagePlace: (req, res) => {
-        //configurar connect multiparty en router.place.js
-        var file_name = 'Imagen no subida...';
-
-        if (!req.files) {
-            return res.status(404).send({
-                status: 'error',
-                message: file_name
-            });
-        }
-        var file_path = req.files.file0.path;
-        var file_split = file_path.split('\\'); //Si usas linux o mac ('/')
-
-        var file_name = file_split[2];
-        var extension_split = file_name.split('\.');
-        var file_ext = extension_split[1];
-        var image_name = req.files.file0.name;
-
-        if (file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif') {
-            fs.unlink(file_path, () => {
-                return res.status(200).send({
-                    status: 'error',
-                    message: 'La extencion no es valida'
-                });
-            })
-        } else {
-            var placeId = req.params.id
-
-            Place.findOneAndUpdate({ _id: placeId }, { image: file_name, image_name: image_name }, { new: true }, (err, imageUpdated) => {
-
-                if (err || !imageUpdated) {
-                    fs.unlink(file_path, () => { })
-                    return res.status(200).send({
-                        status: 'error',
-                        message: 'Error al guardar la imagen en el PLace'
-                    });
-                }
-                return res.status(200).send({
-                    status: 'success',
-                    place: imageUpdated
-                });
-            })
-        }
-    },
-
-    getImagePlace: (req, res) => {
-        var file = req.params.image;
-        var path_file = './upload/places/' + file;
-
-        fs.exists(path_file, (exists) => {
-            if (exists) {
-                return res.sendFile(path.resolve(path_file));
-            } else {
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la imagen no existe'
-                });
-            }
         });
     },
 
