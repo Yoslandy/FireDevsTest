@@ -12,16 +12,10 @@ app.use(cors());
 //Bodyparser Middleware
 app.use(express.json());
 
-
-
 //DB Config
-/* var db = 'mongodb://localhost:27017/LoginShopping'; */
-/* var db = 'mongodb+srv://user:user@shoppinglist-3cfnv.mongodb.net/test?retryWrites=true&w=majority'; */
 var db = config.get('mongoURI');
 
 //Connect Mongodb
-/* mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true); */
 mongoose.Promise = global.Promise;
 mongoose
     .connect(process.env.MONGODB_URI || db, {

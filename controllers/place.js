@@ -170,6 +170,7 @@ var controller = {
 
     searchPlace: (req, res) => {
         var searchString = req.params.search;
+        /* console.log(searchString); */
         Place.find({
             "$or": [
                 { "name": { "$regex": searchString, "$options": "i" } },
