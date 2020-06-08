@@ -26,7 +26,8 @@ var controller = {
             var pack = new Pack(); //creo objeto a guardar
             pack.name = params.name; //Asignar valores
             pack.description = params.description;
-            pack.image = null;
+            pack.image = params.image;
+            pack.image_name = params.image_name;
             pack.save((err, packStored) => {
                 //Guardar articulo
                 if (err || !packStored) {
@@ -38,7 +39,7 @@ var controller = {
                 return res.status(200).send({
                     //Devolver la respuesta si todo salio bien
                     status: "success",
-                    place: packStored
+                    pack: packStored
                 });
             });
         } else {
@@ -56,14 +57,14 @@ var controller = {
         if (last || last != undefined) {
             query.limit(1);
         }
-        query.sort("-_id").exec((err, pack) => {
+        query.sort("-_id").exec((err, packs) => {
             if (err) {
                 return res.status(500).send({
                     status: "error",
                     message: "Error al devolver los Packs"
                 });
             }
-            if (!pack) {
+            if (!packs) {
                 return res.status(404).send({
                     status: "error",
                     message: "No hay Packs para mostrar"
@@ -71,7 +72,7 @@ var controller = {
             }
             return res.status(200).send({
                 status: "success",
-                pack
+                packs
             });
         });
     },
@@ -250,9 +251,10 @@ var controller = {
                     });
                 }
                 if (!pack || pack.length <= 0) {
-                    return res.status(404).send({
-                        status: "error",
-                        message: "No existen lugares para esta busqueda"
+                    return res.status(200).send({
+                        status: "success",
+                        message: "No existen lugares para esta busqueda",
+                        packs: []
                     });
                 }
                 return res.status(200).send({

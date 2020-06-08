@@ -7,6 +7,7 @@ var PackSchema = Schema({
     name: String,
     description: String,
     image: String,
+    image_name: [],
     places: [{
         type: Schema.Types.ObjectId,
         ref: 'Place'
