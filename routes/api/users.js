@@ -7,9 +7,48 @@ const jsonwt = require("jsonwebtoken");
 
 const User = require('../../models/User');
 
+//@route GET api/users/allUsers
+//@desc Get All Users
+//@access Private
+
+router.get('/', (req, res) => {
+    User.find()
+        .sort({ register_date: -1 })
+        .then(users => res.json(users))
+});
+
+//@route PUT api/users/:id
+//@desc Update A User
+//@access Private
+//Update User just to change admin state and active state
+
+router.put('/:id', (req, res) => {
+    var userId = req.params.id;
+    var params = req.body;
+    User.findById(userId)
+        .then(user => user.updateOne(params)
+            .then(() => res.json({ success: true, user: user })))
+        .catch(err => res.status(404).json({ msg: "El elemento no existe" }));
+
+});
+
+//@route DELETE api/users/:id
+//@desc Delete A User
+//@access Private
+
+/* router.delete('/:id', (req, res) => {
+    var userId = req.params.id;
+    User.findById(userId)
+        .then(user => user.delete(userId)
+            .then(() => res.json({ success: true})))
+        .catch(err => res.status(404).json({ msg: "El elemento no existe" }));
+
+}); */
+
 //@route POST api/users
 //@desc Register new user
 //@access Public
+//Registrar Usuario
 
 router.post('/', (req, res) => {
     const { name, email, password } = req.body
@@ -23,7 +62,9 @@ router.post('/', (req, res) => {
             const newUser = new User({
                 name,
                 email,
-                password
+                password,
+                admin: false,
+                active: true
             });
             bcrypt.genSalt(10, (err, salt) => {
                 bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -43,7 +84,9 @@ router.post('/', (req, res) => {
                                         user: {
                                             id: user.id,
                                             name: user.name,
-                                            email: user.email
+                                            email: user.email,
+                                            admin: user.admin,
+                                            active: user.active
                                         }
                                     })
                                 }

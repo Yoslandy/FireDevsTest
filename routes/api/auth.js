@@ -10,6 +10,7 @@ const User = require('../../models/User');
 //@route POST api/auth
 //@desc Auth user
 //@access Public
+//loguearse
 
 router.post('/', (req, res) => {
     const { email, password } = req.body
@@ -20,10 +21,11 @@ router.post('/', (req, res) => {
     User.findOne({ email })
         .then(user => {
             if (!user) return res.status(400).json({ msg: 'User Does not exists' });
-            
+            //si el usuario esta inactivo retornar el error
             bcrypt.compare(password, user.password)
             .then(isMatch =>{
                 if(!isMatch) return res.status(400).json({msg: 'Invalid credentials'})
+                if(!user.active) return res.status(400).json({msg: 'User disabled. Check administrator'})
                 jsonwt.sign(
                     { id: user.id },
                     config.get('jwtSecret'),
@@ -35,7 +37,9 @@ router.post('/', (req, res) => {
                             user: {
                                 id: user.id,
                                 name: user.name,
-                                email: user.email
+                                email: user.email,
+                                admin: user.admin,
+                                active: user.active
                             }
                         })
                     }
@@ -49,6 +53,7 @@ router.post('/', (req, res) => {
 //@route GET api/auth/user
 //@desc Get user data
 //@access Private
+//Obtener el usuario logueado
 
 router.get('/user', auth, (req, res) => {
     User.findById(req.user.id)
