@@ -17,6 +17,39 @@ router.get('/', (req, res) => {
         .then(users => res.json(users))
 });
 
+//@route GET api/users/search/:search
+//@desc Get Users by search
+//@access Private
+
+router.get('/search/:search', (req, res) => {
+    var searchString = req.params.search;
+        User.find({
+            "$or": [
+                { "name": { "$regex": searchString, "$options": "i" } },
+                { "email": { "$regex": searchString, "$options": "i" } },
+            ]
+        })
+            .exec((err, users) => {
+                if (err) {
+                    return res.status(500).send({
+                        status: "error",
+                        message: "Error al cargar los lugares"
+                    });
+                }
+                if (!users || users.length <= 0) {
+                    return res.status(200).send({
+                        status: "success",
+                        message: "No existen lugares para esta busqueda",
+                        users: []
+                    });
+                }
+                return res.status(200).send({
+                    status: 'success',
+                    users
+                });
+            });
+});
+
 //@route PUT api/users/:id
 //@desc Update A User
 //@access Private
