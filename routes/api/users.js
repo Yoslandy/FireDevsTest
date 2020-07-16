@@ -23,31 +23,31 @@ router.get('/', (req, res) => {
 
 router.get('/search/:search', (req, res) => {
     var searchString = req.params.search;
-        User.find({
-            "$or": [
-                { "name": { "$regex": searchString, "$options": "i" } },
-                { "email": { "$regex": searchString, "$options": "i" } },
-            ]
-        })
-            .exec((err, users) => {
-                if (err) {
-                    return res.status(500).send({
-                        status: "error",
-                        message: "Error al cargar los lugares"
-                    });
-                }
-                if (!users || users.length <= 0) {
-                    return res.status(200).send({
-                        status: "success",
-                        message: "No existen lugares para esta busqueda",
-                        users: []
-                    });
-                }
-                return res.status(200).send({
-                    status: 'success',
-                    users
+    User.find({
+        "$or": [
+            { "name": { "$regex": searchString, "$options": "i" } },
+            { "email": { "$regex": searchString, "$options": "i" } },
+        ]
+    })
+        .exec((err, users) => {
+            if (err) {
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error al cargar los usuarios"
                 });
+            }
+            if (!users || users.length <= 0) {
+                return res.status(200).send({
+                    status: "success",
+                    message: "No existen usuarios para esta busqueda",
+                    users: []
+                });
+            }
+            return res.status(200).send({
+                status: 'success',
+                users
             });
+        });
 });
 
 //@route PUT api/users/:id
@@ -65,18 +65,6 @@ router.put('/:id', (req, res) => {
 
 });
 
-//@route DELETE api/users/:id
-//@desc Delete A User
-//@access Private
-
-/* router.delete('/:id', (req, res) => {
-    var userId = req.params.id;
-    User.findById(userId)
-        .then(user => user.delete(userId)
-            .then(() => res.json({ success: true})))
-        .catch(err => res.status(404).json({ msg: "El elemento no existe" }));
-
-}); */
 
 //@route POST api/users
 //@desc Register new user
@@ -91,7 +79,7 @@ router.post('/', (req, res) => {
 
     User.findOne({ email })
         .then(user => {
-            if (user) return res.status(400).json({ msg: 'User already exists' });
+            if (user) return res.status(400).json({ msg: 'The Email already exists' });
             const newUser = new User({
                 name,
                 email,
@@ -130,5 +118,7 @@ router.post('/', (req, res) => {
         })
 
 });
+
+
 
 module.exports = router;

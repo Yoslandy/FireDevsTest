@@ -23,30 +23,59 @@ router.post('/', (req, res) => {
             if (!user) return res.status(400).json({ msg: 'User Does not exists' });
             //si el usuario esta inactivo retornar el error
             bcrypt.compare(password, user.password)
-            .then(isMatch =>{
-                if(!isMatch) return res.status(400).json({msg: 'Invalid credentials'})
-                if(!user.active) return res.status(400).json({msg: 'User disabled. Check administrator'})
-                jsonwt.sign(
-                    { id: user.id },
-                    config.get('jwtSecret'),
-                    { expiresIn: 3600 },
-                    (err, token) => {
-                        if (err) throw err;
-                        res.json({
-                            token,
-                            user: {
-                                id: user.id,
-                                name: user.name,
-                                email: user.email,
-                                admin: user.admin,
-                                active: user.active
-                            }
-                        })
-                    }
-                )
-            })
+                .then(isMatch => {
+                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' })
+                    if (!user.active) return res.status(400).json({ msg: 'User disabled. Check administrator' })
+                    jsonwt.sign(
+                        { id: user.id },
+                        config.get('jwtSecret'),
+                        { expiresIn: 3600 },
+                        (err, token) => {
+                            if (err) throw err;
+                            res.json({
+                                token,
+                                user: {
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email,
+                                    /* password: use */
+                                    admin: user.admin,
+                                    active: user.active
+                                }
+                            })
+                        }
+                    )
+                })
         })
 
+});
+
+//@route PUT api/auth/changepass
+//@desc Change Password
+//@access Public
+//Cambias la contrasena
+
+router.put('/changepass', (req, res) => {
+    const { user, values } = req.body
+    User.findOne(user)
+        .then(userdb => {
+            bcrypt.compare(values.oldpassword, userdb.password)
+                .then(isMatch => {
+                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials. Old Password incorrect' })
+                    if (!userdb.active) return res.status(400).json({ msg: 'User disabled. Check administrator' })
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(values.newpassword, salt, (err, hash) => {
+                            if (err) throw err;
+                            user.password = hash;
+                            var newUser = user;
+                            User.findById(user._id)
+                                .then(user => user.updateOne(newUser)
+                                    .then(() => res.json({ success: true, user: user })))
+                                .catch(err => res.status(404).json({ msg: "El elemento no existe" }));
+                        });
+                    });
+                })
+        })
 });
 
 
@@ -57,8 +86,12 @@ router.post('/', (req, res) => {
 
 router.get('/user', auth, (req, res) => {
     User.findById(req.user.id)
-    .select('-password')
-    .then(user=>res.json(user));
+        .select(/* '-password' */)
+        .then(user => {
+            if (!user) return res.status(400).json({ msg: 'User Does not exists' });
+            res.json(user);
+        })
+
 });
 
 module.exports = router;
