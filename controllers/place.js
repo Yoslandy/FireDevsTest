@@ -3,29 +3,17 @@
 var validator = require("validator");
 var Place = require("../models/Place");
 var Pack = require("../models/Pack");
-var fs = require('fs');
-var path = require('path');
+var Comment = require("../models/Comment");
 
 var controller = {
     //METODO PARA GUARDAR LUGAR
     savePlace: (req, res) => {
         var params = req.body; //recoger parametros por post
         try {
-            //validar datos (validator)
-            var validate_name = !validator.isEmpty(params.name);
-            var validate_city = !validator.isEmpty(params.city);
-        } catch (err) {
-            //si no se cumplen las condiciones lanzo mensaje de error
-            return res.status(404).send({
-                status: "error",
-                message: "Faltan datos por enviar"
-            });
-        }
-        if (validate_name && validate_city) {
-            //Si todo es verdadero...
             var place = new Place();                    //creo objeto a guardar
             place.name = params.name;                   //Asignar valores
             place.city = params.city;
+            place.description = params.description;
             place.image = params.image;                 //direccion de la imagen en la nube en AWS Amazon S3
             place.image_name = params.image_name;    //nombre original de la imagen
             place.save((err, placeStored) => {
@@ -42,17 +30,16 @@ var controller = {
                     place: placeStored
                 });
             });
-        } else {
-            //Sino lanzo error
+        } catch (error) {
             return res.status(200).send({
                 status: "error",
-                message: "Los Datos no son Validados"
+                message: error
             });
         }
     },
 
     getPlaces: (req, res) => {
-        var query = Place.find({});
+        var query = Place.find({}).populate('comments');
         var last = req.params.last;
         if (last || last != undefined) {
             query.limit(3);
@@ -79,13 +66,14 @@ var controller = {
 
     getPlace: (req, res) => {
         var placeId = req.params.id;
+        /* console.log(placeId); */
         if (!placeId || placeId == null) {
             return res.status(404).send({
                 status: "error",
                 message: "No existe el lugar"
             });
         }
-        Place.findById(placeId, (err, place) => {
+        Place.findById(placeId).populate('comments').exec((err, place) => {
             if (err || !place) {
                 return res.status(404).send({
                     status: "error",
@@ -103,18 +91,6 @@ var controller = {
         var placeId = req.params.id;
         var params = req.body; //recoger parametros por post
         try {
-            //validar datos (validator)
-            var validate_name = !validator.isEmpty(params.name);
-            var validate_city = !validator.isEmpty(params.city);
-        } catch (err) {
-            //si no se cumplen las condiciones lanzo mensaje de error
-            return res.status(404).send({
-                status: "error",
-                message: "Faltan datos por enviar"
-            });
-        }
-        if (validate_name && validate_city) {
-            //Si todo es verdadero...
             Place.findOneAndUpdate({ _id: placeId }, params, { new: true }, (err, placeUpdated) => {
                 //Guardar articulo
                 if (err) {
@@ -135,11 +111,10 @@ var controller = {
                     place: placeUpdated
                 });
             });
-        } else {
-            //Sino lanzo error
+        } catch (err) {
             return res.status(200).send({
                 status: "error",
-                message: "Los Datos no son Validados"
+                message: err
             });
         }
     },
@@ -159,6 +134,8 @@ var controller = {
                     message: "El lugar a borrar no existe"
                 });
             }
+            Comment.deleteMany({ place: { $in: placeId } }, () => {
+            });
             Pack.updateMany({}, { $pull: { places: placeId } }, { new: true }, () => {
             });
             return res.status(200).send({
@@ -198,6 +175,8 @@ var controller = {
             });
     },
 
+    /* Este metodo no cumple ninguna funcion actualmente pero lo mantengo por si necesito 
+    saber a cuando paquetes pertence un lugar*/
     getPlaceWithPacks: (req, res) => {
         var placeId = req.params.id;
         Place.findById(placeId).populate('packs').exec((err, updated) => {
@@ -215,6 +194,78 @@ var controller = {
         });
     },
 
+    addLike: (req, res) => {
+        var placeId = req.params.id_place;
+        var userId = req.params.id_user;
+        Place.findOneAndUpdate({ _id: placeId }, { $push: { likes: userId } }, { new: true }, (err, updated) => {
+            if (err) {
+                return res.status(500).send({
+                    status: "error",
+                    message: "Los Datos no se han actualizado"
+                });
+            }
+            return res.status(200).send({
+                status: "success",
+                message: "Actualizado con exito",
+                updated
+            });
+
+        });
+    },
+
+    deleteLike: (req, res) => {
+        var placeId = req.params.id_place;
+        var userId = req.params.id_user;
+        Place.findOneAndUpdate({ _id: placeId }, { $pull: { likes: userId } }, { new: true }, (err, updated) => {
+            if (err) {
+                return res.status(500).send({
+                    status: "error",
+                    message: "Los Datos no se han actualizado"
+                });
+            }
+            return res.status(200).send({
+                status: "success",
+                message: "Actualizado con exito",
+                updated
+            });
+
+        });
+    },
+
+    saveCommentPlace: (req, res) => {
+        var params = req.body; //recoger parametros por post
+        var placeId = req.params.id_place;
+        try {
+            var objcomment = new Comment();                    //creo objeto a guardar
+            objcomment.comment = params.comment;                   //Asignar valores
+            objcomment.rating = params.rating;
+            objcomment.user = params.user;
+            objcomment.place = params.place
+            objcomment.save((err, commentStored) => {
+                //Guardar articulo
+                if (err || !commentStored) {
+                    return res.status(404).send({
+                        status: "error",
+                        message: "Los Datos no se han guardado"
+                    });
+                }
+                Place.findOneAndUpdate({ _id: placeId }, { $push: { comments: commentStored._id } }, { new: true }, () => {
+                    return res.status(200).send({
+                        //Devolver la respuesta si todo salio bien
+                        status: "success",
+                        comment: commentStored
+                    });
+                });
+                
+                
+            });
+        } catch (error) {
+            return res.status(200).send({
+                status: "error",
+                message: error
+            });
+        }
+    },
 };
 
 module.exports = controller;

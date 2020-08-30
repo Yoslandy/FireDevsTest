@@ -13,5 +13,8 @@ router.get('/place/:id', PlaceController.getPlace);
 router.put('/place/:id', PlaceController.updatePlace);
 router.delete('/place/:id', PlaceController.deletePlace);
 router.get('/search/:search', PlaceController.searchPlace);
+router.post('/place/:id_place/user/:id_user', PlaceController.addLike);
+router.put('/place/:id_place/user/:id_user', PlaceController.deleteLike);
+router.post('/place/comment/:id_place', PlaceController.saveCommentPlace);
 
 module.exports = router;

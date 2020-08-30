@@ -3,8 +3,6 @@
 var validator = require("validator");
 var Pack = require("../models/Pack");
 var Place = require("../models/Place");
-var fs = require('fs');
-var path = require('path');
 
 var controller = {
     //METODO PARA GUARDAR LUGAR
@@ -164,85 +162,21 @@ var controller = {
             Place.updateMany({}, { $pull: { packs: packId } }, { new: true }, () => {
 
             });
-            var path_file = './upload/pack/' + packDeleted.image;
-            fs.unlink(path_file, () => {
-                /* Place. */
-                return res.status(200).send({
-                    status: 'success',
-                    pack: packDeleted
-                });
+            return res.status(200).send({
+                status: 'success',
+                pack: packDeleted
             });
         });
     },
-
-    uploadImagePack: (req, res) => {
-        //configurar connect multiparty en router.pack.js
-        var file_name = 'Imagen no subida...';
-
-        if (!req.files) {
-            return res.status(404).send({
-                status: 'error',
-                message: file_name
-            });
-        }
-        var file_path = req.files.file0.path;
-        var file_split = file_path.split('\\'); //Si usas linux o mac ('/')
-
-        var file_name = file_split[2];
-        var extension_split = file_name.split('\.');
-        var file_ext = extension_split[1];
-
-        if (file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif') {
-            fs.unlink(file_path, () => {
-                return res.status(200).send({
-                    status: 'error',
-                    message: 'La extencion no es valida'
-                });
-            })
-        } else {
-            var packId = req.params.id
-
-            Pack.findOneAndUpdate({ _id: packId }, { image: file_name }, { new: true }, (err, imageUpdated) => {
-
-                if (err || !imageUpdated) {
-                    fs.unlink(file_path, () => {})
-                    return res.status(200).send({
-                        status: 'error',
-                        message: 'Error al guardar la imagen en el PLace'
-                    });
-                }
-                return res.status(200).send({
-                    status: 'success',
-                    pack: imageUpdated
-                });
-            })
-        }
-    },
-
-    getImagePack: (req, res) => {
-        var file = req.params.image;
-        var path_file = './upload/pack/' + file;
-
-        fs.exists(path_file, (exists) => {
-            if (exists) {
-                return res.sendFile(path.resolve(path_file));
-            } else {
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'la imagen no existe'
-                });
-            }
-        });
-    },
-
+    
     searchPack: (req, res) => {
         var searchString = req.params.search;
         Pack.find({
-                "$or": [
-                    { "name": { "$regex": searchString, "$options": "i" } },
-                    { "description": { "$regex": searchString, "$options": "i" } },
-                ]
-            })
+            "$or": [
+                { "name": { "$regex": searchString, "$options": "i" } },
+                { "description": { "$regex": searchString, "$options": "i" } },
+            ]
+        })
             .exec((err, pack) => {
                 if (err) {
                     return res.status(500).send({
@@ -285,10 +219,6 @@ var controller = {
             });
 
         });
-        /* return res.status(200).send({
-            status: "success",
-            message: "Actualizado con exito",
-        }); */
     },
 
     //ELIMINO UN DETERMINADO PLACE A UN PAQUETE Y A SU VEZ EL PAQUETE AL PLACE

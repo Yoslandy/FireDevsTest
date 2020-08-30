@@ -72,11 +72,7 @@ router.put('/:id', (req, res) => {
 //Registrar Usuario
 
 router.post('/', (req, res) => {
-    const { name, email, password } = req.body
-    if (!name || !email || !password) {
-        return res.status(400).json({ msg: 'Please enter all fields' })
-    }
-
+    const { name, email, password, image, image_name } = req.body
     User.findOne({ email })
         .then(user => {
             if (user) return res.status(400).json({ msg: 'The Email already exists' });
@@ -84,6 +80,8 @@ router.post('/', (req, res) => {
                 name,
                 email,
                 password,
+                image,
+                image_name,
                 admin: false,
                 active: true
             });
@@ -107,7 +105,9 @@ router.post('/', (req, res) => {
                                             name: user.name,
                                             email: user.email,
                                             admin: user.admin,
-                                            active: user.active
+                                            active: user.active,
+                                            image: user.image,
+                                            image_name: user.image_name
                                         }
                                     })
                                 }
@@ -115,7 +115,7 @@ router.post('/', (req, res) => {
                         });
                 });
             });
-        })
+        }) 
 
 });
 

@@ -35,12 +35,13 @@ router.post('/', (req, res) => {
                             res.json({
                                 token,
                                 user: {
-                                    id: user.id,
+                                    _id: user.id,
                                     name: user.name,
                                     email: user.email,
-                                    /* password: use */
                                     admin: user.admin,
-                                    active: user.active
+                                    active: user.active,
+                                    image: user.image,
+                                    image_name: user.image_name
                                 }
                             })
                         }
@@ -57,12 +58,14 @@ router.post('/', (req, res) => {
 
 router.put('/changepass', (req, res) => {
     const { user, values } = req.body
-    User.findOne(user)
+    try {
+        User.findById(user._id)
         .then(userdb => {
+            if (!userdb) return res.status(400).json({ msg: 'User Does not exists' });
             bcrypt.compare(values.oldpassword, userdb.password)
                 .then(isMatch => {
-                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials. Old Password incorrect' })
-                    if (!userdb.active) return res.status(400).json({ msg: 'User disabled. Check administrator' })
+                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials.' })
+                    if (!userdb.active) return res.status(400).json({ msg: 'User disabled.' })
                     bcrypt.genSalt(10, (err, salt) => {
                         bcrypt.hash(values.newpassword, salt, (err, hash) => {
                             if (err) throw err;
@@ -76,6 +79,9 @@ router.put('/changepass', (req, res) => {
                     });
                 })
         })
+    } catch (error) {
+        throw error
+    }
 });
 
 
@@ -86,7 +92,7 @@ router.put('/changepass', (req, res) => {
 
 router.get('/user', auth, (req, res) => {
     User.findById(req.user.id)
-        .select(/* '-password' */)
+        .select('-password')
         .then(user => {
             if (!user) return res.status(400).json({ msg: 'User Does not exists' });
             res.json(user);
