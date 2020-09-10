@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.post('/save', PlaceController.savePlace);
 router.get('/allplaces', PlaceController.getPlaces);
-router.get('/allplaces/:last?', PlaceController.getPlaces);
+router.get('/allplaces/:home?', PlaceController.getPlaces);
 router.get('/place/:id/packs', PlaceController.getPlaceWithPacks);
 router.get('/place/:id', PlaceController.getPlace);
 router.put('/place/:id', PlaceController.updatePlace);

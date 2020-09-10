@@ -40,9 +40,9 @@ var controller = {
 
     getPlaces: (req, res) => {
         var query = Place.find({}).populate('comments');
-        var last = req.params.last;
-        if (last || last != undefined) {
-            query.limit(3);
+        var home = req.params.home;
+        if (home || home != undefined) {
+            query.limit(4);
         }
         query.sort("-_id").exec((err, places) => {
             if (err) {
@@ -153,7 +153,7 @@ var controller = {
                 { "name": { "$regex": searchString, "$options": "i" } },
                 { "city": { "$regex": searchString, "$options": "i" } },
             ]
-        })
+        }).populate('comments')
             .exec((err, places) => {
                 if (err) {
                     return res.status(500).send({
@@ -256,8 +256,6 @@ var controller = {
                         comment: commentStored
                     });
                 });
-                
-                
             });
         } catch (error) {
             return res.status(200).send({
