@@ -1,4 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://user:user@shoppinglist-3cfnv.mongodb.net/test?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/DundasTradingLTD?retryWrites=true&w=majority",
     "jwtSecret": "sl_myJwtSecret"
 }
