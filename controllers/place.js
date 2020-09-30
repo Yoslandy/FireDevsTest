@@ -38,7 +38,7 @@ var controller = {
         }
     },
 
-    /* getPlaces: (req, res) => {
+    getPlaces: (req, res) => {
         var query = Place.find({}).populate('comments');
         var home = req.params.home;
         if (home || home != undefined) {
@@ -63,7 +63,7 @@ var controller = {
             });
         });
     },
- */
+
     getPlace: (req, res) => {
         var placeId = req.params.id;
         /* console.log(placeId); */
