@@ -1,7 +1,7 @@
 {
-    "name": "login",
+    "name": "censo_cuba_tt",
     "version": "1.0.0",
-    "description": "login and shopping con MERN",
+    "description": "Censo Cuba TT",
     "main": "server.js",
     "engines": {
         "node": "10.16.x"

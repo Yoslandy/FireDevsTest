@@ -1,4 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/DundasTradingLTD?retryWrites=true&w=majority",
+    "mongoURI2": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/DundasTradingLTD?retryWrites=true&w=majority",
+    "mongoURI": "mongodb://localhost:27017/CensoCubaTT",
     "jwtSecret": "sl_myJwtSecret"
 }
