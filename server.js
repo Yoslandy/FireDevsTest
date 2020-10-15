@@ -31,8 +31,7 @@ mongoose
 app.use('/api/censo', require('./routes/api/censo'));
 /* app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/places', require('./routes/api/places'));
-app.use('/api/packs', require('./routes/api/packs')); */
+app.use('/api/places', require('./routes/api/places'));*/
 
 //Serve static assets if in producton
 if (process.env.NODE_ENV === 'production') {
