@@ -11,7 +11,6 @@ var CensoSchema = Schema({
     age: Number,
     arrival_date: Date,
     status: String,
-    register_no: String,
     register_date: {
         type: Date,
         default: Date.now

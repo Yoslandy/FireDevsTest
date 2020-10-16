@@ -18,7 +18,6 @@ var controller = {
             censo.age = params.age;    
             censo.arrival_date = params.arrival_date;    
             censo.status = params.status;    
-            censo.register_no = params.register_no;    
             censo.image = params.image;                     //direccion de la imagen en la nube en AWS Amazon S3
             censo.image_name = params.image_name;           //nombre original de la imagen
             censo.save((err, censoStored) => {
