@@ -7,7 +7,7 @@ var CensoSchema = Schema({
     name: String,
     lastname: String,
     email: String,
-    phone: Number,
+    phone: String,
     age: Number,
     arrival_date: Date,
     status: String,
@@ -16,6 +16,8 @@ var CensoSchema = Schema({
         type: Date,
         default: Date.now
     },
+    image: String,
+    image_name: [],
 });
 
 module.exports = mongoose.model('Censo', CensoSchema);

@@ -14,11 +14,13 @@ var controller = {
             censo.name = params.name;                   //Asignar valores
             censo.lastname = params.lastname;
             censo.email = params.email;
-            censo.phone = params.phone;                 //direccion de la imagen en la nube en AWS Amazon S3
-            censo.age = params.age;    //nombre original de la imagen
-            censo.arrival_date = params.arrival_date;    //nombre original de la imagen
-            censo.status = params.status;    //nombre original de la imagen
-            censo.register_no = params.register_no;    //nombre original de la imagen
+            censo.phone = params.phone;                 
+            censo.age = params.age;    
+            censo.arrival_date = params.arrival_date;    
+            censo.status = params.status;    
+            censo.register_no = params.register_no;    
+            censo.image = params.image;                     //direccion de la imagen en la nube en AWS Amazon S3
+            censo.image_name = params.image_name;           //nombre original de la imagen
             censo.save((err, censoStored) => {
                 //Guardar articulo
                 if (err || !censoStored) {
