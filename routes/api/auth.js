@@ -13,19 +13,17 @@ const User = require('../../models/User');
 //loguearse
 
 router.post('/', (req, res) => {
-    const { email, password } = req.body
-    if (!email || !password) {
-        return res.status(400).json({ msg: 'Please enter all fields' })
+    const { name, password } = req.body
+    if (!name || !password) {
+        return res.status(400).json({ msg: 'Llene los campos' })
     }
-
-    User.findOne({ email })
+    User.findOne({ name })
         .then(user => {
-            if (!user) return res.status(400).json({ msg: 'User Does not exists' });
+            if (!user) return res.status(400).json({ msg: 'El usuario no existe' });
             //si el usuario esta inactivo retornar el error
             bcrypt.compare(password, user.password)
                 .then(isMatch => {
-                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' })
-                    if (!user.active) return res.status(400).json({ msg: 'User disabled. Check administrator' })
+                    if (!isMatch) return res.status(400).json({ msg: 'Contraseña incorrecta' })
                     jsonwt.sign(
                         { id: user.id },
                         config.get('jwtSecret'),
@@ -37,11 +35,6 @@ router.post('/', (req, res) => {
                                 user: {
                                     _id: user.id,
                                     name: user.name,
-                                    email: user.email,
-                                    admin: user.admin,
-                                    active: user.active,
-                                    image: user.image,
-                                    image_name: user.image_name
                                 }
                             })
                         }
@@ -50,40 +43,6 @@ router.post('/', (req, res) => {
         })
 
 });
-
-//@route PUT api/auth/changepass
-//@desc Change Password
-//@access Public
-//Cambias la contrasena
-
-router.put('/changepass', (req, res) => {
-    const { user, values } = req.body
-    try {
-        User.findById(user._id)
-        .then(userdb => {
-            if (!userdb) return res.status(400).json({ msg: 'User Does not exists' });
-            bcrypt.compare(values.oldpassword, userdb.password)
-                .then(isMatch => {
-                    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials.' })
-                    if (!userdb.active) return res.status(400).json({ msg: 'User disabled.' })
-                    bcrypt.genSalt(10, (err, salt) => {
-                        bcrypt.hash(values.newpassword, salt, (err, hash) => {
-                            if (err) throw err;
-                            user.password = hash;
-                            var newUser = user;
-                            User.findById(user._id)
-                                .then(user => user.updateOne(newUser)
-                                    .then(() => res.json({ success: true, user: user })))
-                                .catch(err => res.status(404).json({ msg: "El elemento no existe" }));
-                        });
-                    });
-                })
-        })
-    } catch (error) {
-        throw error
-    }
-});
-
 
 //@route GET api/auth/user
 //@desc Get user data
