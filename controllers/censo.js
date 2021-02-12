@@ -1,11 +1,24 @@
 "use strict";
 
 var Censo = require("../models/Censo");
+ const config = require("config");
+const S3 = require('react-aws-s3');
+/*const AWS_Access_Key_ID = S3.get('AWS_Access_Key_ID');
+const AWS_Secret_Access_Key = S3.get('AWS_Secret_Access_Key'); */
+//este config es para ´react-s3´ para agregar la foto
+/* const configS3 = {
+    bucketName: 'cubatour-images',
+    dirName: 'CensoCubaTT-Temporal',
+    region: 'us-east-1',
+    accessKeyId: AWS_Access_Key_ID,
+    secretAccessKey: AWS_Secret_Access_Key,
+} */
 
 var controller = {
     //METODO PARA GUARDAR LUGAR
     addCenso: (req, res) => {
-        var params = req.body; //recoger parametros por post
+        let params = req.body; //recoger parametros por post
+        /* console.log(params); */
         try {
             var censo = new Censo();                    //creo objeto a guardar
             censo.name = params.name;                   //Asignar valores
@@ -62,5 +75,7 @@ var controller = {
     },
 
 };
+
+
 
 module.exports = controller;
