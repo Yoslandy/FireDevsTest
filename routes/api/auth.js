@@ -14,7 +14,7 @@ const User = require('../../models/User');
 
 router.post('/', (req, res) => {
     const { name, password } = req.body
-    if (!name || !password) {
+    if (!name || !password) { //Este if no lo necesito
         return res.status(400).json({ msg: 'Llene los campos' })
     }
     User.findOne({ name })
