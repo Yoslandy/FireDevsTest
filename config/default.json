@@ -1,6 +1,6 @@
 {
-    "mongoURI": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/CensoCubaTT?retryWrites=true&w=majority",
-    "mongoURI2": "mongodb://localhost:27017/CensoCubaTT",
+    "mongoURI2": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/CensoCubaTT?retryWrites=true&w=majority",
+    "mongoURI": "mongodb://localhost:27017/CensoCubaTT",
     "jwtSecret": "sl_myJwtSecret",
     "AWS_Access_Key_ID": "AKIA6ODEV7ZKMVGGRROX",
     "AWS_Secret_Access_Key": "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"
