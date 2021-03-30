@@ -1,7 +1,7 @@
 {
-    "name": "censo_cuba_tt",
+    "name": "personal_page",
     "version": "1.0.0",
-    "description": "Censo Cuba TT",
+    "description": "Pagina Personal",
     "main": "server.js",
     "engines": {
         "node": "10.16.x"

@@ -7,6 +7,7 @@ const auth = require('../../middleware/auth');
 var router = express.Router();
 
 router.post('/add', CensoController.addCenso);
-router.get('/allCensos',/*  auth, */ CensoController.getCensos);
+router.get('/allCensos', CensoController.getCensos);
+router.get('/:id', CensoController.getCenso);
 
 module.exports = router;

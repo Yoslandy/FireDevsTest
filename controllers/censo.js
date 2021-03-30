@@ -1,8 +1,8 @@
 "use strict";
 
 var Censo = require("../models/Censo");
- const config = require("config");
-const S3 = require('react-aws-s3');
+ /* const config = require("config"); */
+/* const S3 = require('react-aws-s3'); */
 /*const AWS_Access_Key_ID = S3.get('AWS_Access_Key_ID');
 const AWS_Secret_Access_Key = S3.get('AWS_Secret_Access_Key'); */
 //este config es para ´react-s3´ para agregar la foto
@@ -22,14 +22,14 @@ var controller = {
         try {
             var censo = new Censo();                    //creo objeto a guardar
             censo.name = params.name;                   //Asignar valores
-            censo.lastname = params.lastname;
-            censo.email = params.email;
-            censo.phone = params.phone;
-            censo.age = params.age;
-            censo.arrival_date = params.arrival_date;
-            censo.status = params.status;
-            censo.image = params.image;                     //direccion de la imagen en la nube en AWS Amazon S3
-            censo.image_name = params.image_name;           //nombre original de la imagen
+            censo.subcontent = params.subcontent;
+            censo.content = params.content;
+            censo.type = params.type;
+            censo.url = params.url;
+            censo.date = params.date;
+            censo.client = params.client;
+            censo.image = params.image;
+            censo.images = params.images;
             censo.save((err, censoStored) => {
                 //Guardar articulo
                 if (err || !censoStored) {
@@ -50,6 +50,29 @@ var controller = {
                 message: error
             });
         }
+    },
+
+    getCenso: (req, res) => {
+        var censoId = req.params.id;
+        /* console.log(placeId); */
+        if (!censoId || censoId == null) {
+            return res.status(404).send({
+                status: "error",
+                message: "No existe el lugar"
+            });
+        }
+        Censo.findById(censoId).exec((err, censo) => {
+            if (err || !censo) {
+                return res.status(404).send({
+                    status: "error",
+                    message: "No existe el Place"
+                });
+            }
+            return res.status(200).send({
+                status: "success",
+                censo
+            });
+        });
     },
 
     getCensos: (req, res) => {

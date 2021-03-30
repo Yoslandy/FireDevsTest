@@ -5,18 +5,14 @@ var Schema = mongoose.Schema;
 
 var CensoSchema = Schema({
     name: String,
-    lastname: String,
-    email: String,
-    phone: String,
-    age: Number,
-    arrival_date: Date,
-    status: String,
-    register_date: {
-        type: Date,
-        default: Date.now
-    },
+    subcontent: String,
+    content: String,
+    type: String,
+    url: String,
+    date: String,
+    client: String,
     image: String,
-    image_name: [],
+    images: [],
 });
 
 module.exports = mongoose.model('Censo', CensoSchema);
