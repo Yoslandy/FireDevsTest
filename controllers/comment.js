@@ -1,26 +1,21 @@
 "use strict";
 
-var Censo = require("../models/Censo");
+var Comment = require("../models/Comment");
  
 var controller = {
     //METODO PARA GUARDAR LUGAR
-    addCenso: (req, res) => {
+    addComment: (req, res) => {
         let params = req.body; //recoger parametros por post
         /* console.log(params); */
         try {
-            var censo = new Censo();                    //creo objeto a guardar
-            censo.name = params.name;                   //Asignar valores
-            censo.subcontent = params.subcontent;
-            censo.content = params.content;
-            censo.type = params.type;
-            censo.url = params.url;
-            censo.date = params.date;
-            censo.client = params.client;
-            censo.image = params.image;
-            censo.images = params.images;
-            censo.save((err, censoStored) => {
+            var comment = new Comment();                    //creo objeto a guardar
+            comment.client = params.client;                   //Asignar valores
+            comment.company = params.company;
+            comment.position = params.position;
+            comment.comment = params.comment;
+            comment.save((err, commentStored) => {
                 //Guardar articulo
-                if (err || !censoStored) {
+                if (err || !commentStored) {
                     return res.status(404).send({
                         status: "error",
                         message: "Los Datos no se han guardado"
@@ -29,7 +24,7 @@ var controller = {
                 return res.status(200).send({
                     //Devolver la respuesta si todo salio bien
                     status: "success",
-                    censo: censoStored
+                    comment: commentStored
                 });
             });
         } catch (error) {
@@ -40,9 +35,8 @@ var controller = {
         }
     },
 
-    getCenso: (req, res) => {
+    /* getCenso: (req, res) => {
         var censoId = req.params.id;
-        /* console.log(placeId); */
         if (!censoId || censoId == null) {
             return res.status(404).send({
                 status: "error",
@@ -61,26 +55,26 @@ var controller = {
                 censo
             });
         });
-    },
+    }, */
 
-    getCensos: (req, res) => {
-        var query = Censo.find({});
-        query.sort("-_id").exec((err, censos) => {
+    getComments: (req, res) => {
+        var query = Comment.find({});
+        query.sort("-_id").exec((err, comments) => {
             if (err) {
                 return res.status(500).send({
                     status: "error",
-                    message: "Error al devolver los Censos"
+                    message: "Error al devolver los Comments"
                 });
             }
-            if (!censos) {
+            if (!comments) {
                 return res.status(404).send({
                     status: "error",
-                    message: "No hay Places para mostrar"
+                    message: "No hay Comments para mostrar"
                 });
             }
             return res.status(200).send({
                 status: "success",
-                censos
+                comments
             });
         });
     },
