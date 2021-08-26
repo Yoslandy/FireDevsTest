@@ -28,10 +28,8 @@ mongoose
     .catch(err => console.log(err));
 
 //Use Routes
-app.use('/api/censo', require('./routes/api/censo'));
-app.use('/api/users', require('./routes/api/users'));
-app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/comment', require('./routes/api/comment'));
+app.use('/api/groups', require('./routes/api/group'));
+app.use('/api/students', require('./routes/api/student'));
 
 //Serve static assets if in producton
 if (process.env.NODE_ENV === 'production') {

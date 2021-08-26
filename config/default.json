@@ -1,5 +1,3 @@
 {
-    "mongoURI": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/PersonalDB?retryWrites=true&w=majority",
-    "mongoURI2": "mongodb://localhost:27017/Portfolio",
-    "jwtSecret": "sl_myJwtSecret"
+    "mongoURI": "mongodb+srv://cubatour:cubatour@cluster0.xhw0t.gcp.mongodb.net/FireDevsTest?retryWrites=true&w=majority"
 }
