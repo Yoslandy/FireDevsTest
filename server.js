@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const config = require('config');
+//const config = require('config');
+var env = require('node-env-file');
+env(__dirname + '/.env')
 
 const app = express();
 
@@ -13,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 //DB Config
-var db = config.get('mongoURI');
+var db = process.env.MONGO_URI /* config.get('mongoURI') */;
 
 //Connect Mongodb
 mongoose.Promise = global.Promise;
