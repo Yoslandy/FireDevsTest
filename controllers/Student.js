@@ -23,6 +23,7 @@ var controller = {
                         message: "Los Datos no se han guardado"
                     });
                 }
+
                 Group.findOneAndUpdate({ _id: params.grupo/* ._id */ }, { $push: { students: studentStored._id } }, { new: true }, () => {
                     return res.status(200).send({               //Devolver la respuesta si todo salio bien
                         status: "success",
