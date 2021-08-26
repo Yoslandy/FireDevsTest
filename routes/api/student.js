@@ -1,7 +1,7 @@
 'use strict'
 
 var express = require('express');
-var StudentController = require('../../controllers/student');
+var StudentController = require('../../controllers/Student');
 
 var router = express.Router();
 
