@@ -6,7 +6,7 @@ var Group = require("../models/Group");
 var controller = {
     //METODO PARA GUARDAR ESTUDIANTE
     addStudent: (req, res) => {
-        let params = req.body;                              //recoger parametros por post
+        let params = req.body;
         try {
             var student = new Student();                      //creo objeto a guardar
             student.name = params.name;                       //Asignar valores
@@ -15,7 +15,7 @@ var controller = {
             student.age = params.age;
             student.dateBirth = params.dateBirth;
             student.cityBirth = params.cityBirth;
-            student.group = params.grupo;
+            student.group = params.group;
             student.save((err, studentStored) => {              //Guardar articulo
                 if (err || !studentStored) {
                     return res.status(404).send({
@@ -23,8 +23,7 @@ var controller = {
                         message: "Los Datos no se han guardado"
                     });
                 }
-
-                Group.findOneAndUpdate({ _id: params.grupo/* ._id */ }, { $push: { students: studentStored._id } }, { new: true }, () => {
+                Group.findOneAndUpdate({ _id: params.group._id }, { $push: { students: studentStored._id } }, { new: true }, () => {
                     return res.status(200).send({               //Devolver la respuesta si todo salio bien
                         status: "success",
                         student: studentStored
@@ -47,7 +46,7 @@ var controller = {
                 message: "No existe el estudiante"
             });
         }
-        Student.findById(studentId).exec((err, student) => {
+        Student.findById(studentId).populate('group').exec((err, student) => {
             if (err || !student) {
                 return res.status(404).send({
                     status: "error",
@@ -62,7 +61,7 @@ var controller = {
     },
     //METODO PARA OBTENER TODOS LOS ESTUDIANTES
     getStudents: (req, res) => {
-        var query = Student.find({});
+        var query = Student.find({}).populate('group');
         query.sort("-_id").exec((err, students) => {
             if (err) {
                 return res.status(500).send({
@@ -98,6 +97,9 @@ var controller = {
                     message: "El Estudiante a borrar no existe"
                 });
             }
+            Group.updateMany({}, { $pull: { students: studentId } }, { new: true }, () => {
+
+            });
             return res.status(200).send({
                 status: 'success',
                 student: studentDeleted
@@ -108,6 +110,7 @@ var controller = {
     updateStudent: (req, res) => {
         var studentId = req.params.id;
         var params = req.body; //recoger parametros del grupo
+        /* console.log(studentId) */
         Student.findOneAndUpdate({ _id: studentId }, params, { new: true }, (err, studentUpdated) => {
             if (err) {
                 return res.status(500).send({
@@ -127,7 +130,6 @@ var controller = {
             });
         });
     },
-
 };
 
 

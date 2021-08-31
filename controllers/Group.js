@@ -1,6 +1,7 @@
 "use strict";
 
-var Group = require("../models/Group");
+const Group = require("../models/Group");
+const Student = require("../models/Student");
 
 var controller = {
 
@@ -39,7 +40,7 @@ var controller = {
                 message: "No existe el lugar"
             });
         }
-        Group.findById(groupId).exec((err, group) => {
+        Group.findById(groupId).populate('students').exec((err, group) => {
             if (err || !group) {
                 return res.status(404).send({
                     status: "error",
@@ -54,7 +55,7 @@ var controller = {
     },
     //METODO PARA OBTENER TODOS LOS GRUPOS
     getGroups: (req, res) => {
-        var query = Group.find({});
+        var query = Group.find({}).populate('students');
         query.sort("-_id").exec((err, groups) => {
             if (err) {
                 return res.status(500).send({
@@ -90,6 +91,11 @@ var controller = {
                     message: "El Grupo a borrar no existe"
                 });
             }
+
+            /* Student.updateMany({}, { $pull: { group: groupId } }, { new: true }, () => {
+
+            }); */
+
             return res.status(200).send({
                 status: 'success',
                 group: groupDeleted

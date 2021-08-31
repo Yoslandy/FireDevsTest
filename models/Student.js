@@ -8,7 +8,7 @@ var StudentSchema = Schema({
     email: String,
     sex: String,
     age: Number,
-    dateBirth: Date,
+    dateBirth: String,
     cityBirth: String,
     group: {
         type: Schema.Types.ObjectId,
